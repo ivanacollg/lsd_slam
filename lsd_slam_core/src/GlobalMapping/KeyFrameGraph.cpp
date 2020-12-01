@@ -18,7 +18,7 @@
 * along with LSD-SLAM. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "GlobalMapping/KeyFrameGraph.h"
+#include "KeyFrameGraph.h"
 #include "DataStructures/Frame.h"
 
 #include <g2o/core/sparse_optimizer.h>

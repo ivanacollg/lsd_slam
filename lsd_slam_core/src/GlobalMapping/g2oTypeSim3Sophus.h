@@ -25,6 +25,7 @@
 #include "g2o/core/base_binary_edge.h"
 #include "g2o/types/sba/types_six_dof_expmap.h"
 #include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/LU>
 
 namespace lsd_slam
 {
@@ -93,7 +94,8 @@ public:
 	
 	virtual bool setMeasurementData(const double* m)
 	{
-		Eigen::Map<const g2o::Vector7d> v(m);
+    //Eigen::Map<g2o::Vector7> test;
+    Eigen::Map<const g2o::Vector7> v(m);
 		setMeasurement(Sophus::Sim3d::exp(v));
 		return true;
 	}

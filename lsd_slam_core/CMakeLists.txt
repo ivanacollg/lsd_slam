@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Eigen3 REQUIRED)
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 4.1.2 REQUIRED)
 find_package(X11 REQUIRED)
 include(cmake/FindG2O.cmake)
 include(cmake/FindSuiteParse.cmake)
@@ -25,6 +25,10 @@ message("-- OpenCV_INCLUDE_DIRS : " ${OpenCV_INCLUDE_DIRS})
 message("-- CHOLMOD_INCLUDE_DIR : " ${CHOLMOD_INCLUDE_DIR})
 message("-- CSPARSE_INCLUDE_DIR : " ${CSPARSE_INCLUDE_DIR})
 message("-- G2O_INCLUDE_DIR : " ${G2O_INCLUDE_DIR})
+
+# Sophus
+add_subdirectory(${PROJECT_SOURCE_DIR}/thirdparty/Sophus)
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/Sophus/sophus)
 
 # FabMap
 # uncomment this part to enable fabmap
@@ -49,9 +53,9 @@ add_definitions("-DUSE_ROS")
 add_definitions("-DENABLE_SSE")
 
 # Also add some useful compiler flag
-set(CMAKE_CXX_FLAGS
-   "${CMAKE_CXX_FLAGS} -march=native -Wall -std=c++0x"
-)
+#set(CMAKE_CXX_FLAGS
+#   "${CMAKE_CXX_FLAGS} -march=native -Wall -std=c++0x"
+#)
 
 # Set source files
 set(lsd_SOURCE_FILES
@@ -85,7 +89,6 @@ set(SOURCE_FILES
 )
 
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
   ${G2O_INCLUDE_DIR}
@@ -97,7 +100,6 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/src/IOWrapper
   ${PROJECT_SOURCE_DIR}/src/Tracking
   ${PROJECT_SOURCE_DIR}/src/util
-  ${PROJECT_SOURCE_DIR}/thirdparty/openFabMap
   ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
   ${PROJECT_SOURCE_DIR}/thirdparty/Sophus/sophus
   ${CSPARSE_INCLUDE_DIR} #Has been set by SuiteParse

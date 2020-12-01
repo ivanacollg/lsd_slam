@@ -19,7 +19,8 @@
 */
 
 #pragma once
-#include <opencv4/opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv4/opencv2/core.hpp>
 #include <opencv4/opencv2/core/core.hpp>
 #include <opencv4/opencv2/imgproc/imgproc.hpp>
 
@@ -44,10 +45,10 @@ void displayImage(const char* windowName, const cv::Mat& image, bool autoSize = 
 /// Convenience function which internally converts the image to a cv::Mat
 inline void displayImage(const char* windowName, const float* image, int width, int height)
 {
-	cv::Mat floatWrapper(height, width, CV_32F, const_cast<float*>(image));
+  cv::Mat floatWrapper(height, width, CV_32F, const_cast<float*>(image));
 	cv::Mat tempImage(height, width, CV_8UC1);
 	floatWrapper.convertTo(tempImage, CV_8UC1);
-	cv::cvtColor(tempImage, tempImage, CV_GRAY2RGB);
+  cv::cvtColor(tempImage, tempImage, cv::COLOR_GRAY2RGB);
 	displayImage(windowName, tempImage);
 }
 
