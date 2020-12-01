@@ -107,6 +107,7 @@ inline Eigen::Vector2f getInterpolatedElement42(const Eigen::Vector4f* const mat
 	        + (dx-dxdy) * *(const Eigen::Vector2f*)(bp+1)
 			+ (1-dx-dy+dxdy) * *(const Eigen::Vector2f*)(bp);
 }
+
 inline void fillCvMat(cv::Mat* mat, cv::Vec3b color)
 {
 	for(int y=0;y<mat->size().height;y++)
@@ -123,7 +124,10 @@ inline void setPixelInCvMat(cv::Mat* mat, cv::Vec3b color, int xx, int yy, int l
 
 inline cv::Vec3b getGrayCvPixel(float val)
 {
-	if(val < 0) val = 0; if(val>255) val=255;
+  if(val < 0)
+    val = 0;
+  if(val>255)
+    val=255;
 	return cv::Vec3b(val,val,val);
 }
 

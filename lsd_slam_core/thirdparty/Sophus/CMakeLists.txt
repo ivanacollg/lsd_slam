@@ -1,7 +1,7 @@
 SET(PROJECT_NAME Sophus)
 
 PROJECT(${PROJECT_NAME})
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
 
 SET (CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -31,8 +31,7 @@ set( Sophus_INCLUDE_DIR ${PROJECT_SOURCE_DIR} )
 
 ################################################################################
 
-include(FindEigen3.cmake)
-#find_package( Eigen3 REQUIRED )
+find_package(Eigen3 REQUIRED )
 INCLUDE_DIRECTORIES( ${EIGEN3_INCLUDE_DIR} )
 SET( Sophus_INCLUDE_DIR ${Sophus_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} )
 

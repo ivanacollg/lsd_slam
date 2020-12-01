@@ -1,12 +1,8 @@
-cmake_minimum_required(VERSION 2.8.7)
+cmake_minimum_required(VERSION 3.0.2)
 project(lsd_slam_core)
 
-# Set the build type. Options are:
-#  Coverage : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug : w/ debug symbols, w/o optimization
-#  Release : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel : w/o debug symbols, w/ optimization, stripped binaries
+#add_compile_options(-std=c++17)
+add_compile_options(-std=gnu++17) # fixes some errors about allocator types appearing in newer g++ versions
 set(CMAKE_BUILD_TYPE Release)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -20,10 +16,12 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Eigen3 REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(X11 REQUIRED)
 include(cmake/FindG2O.cmake)
 include(cmake/FindSuiteParse.cmake)
 
+message("-- OpenCV_INCLUDE_DIRS : " ${OpenCV_INCLUDE_DIRS})
 message("-- CHOLMOD_INCLUDE_DIR : " ${CHOLMOD_INCLUDE_DIR})
 message("-- CSPARSE_INCLUDE_DIR : " ${CSPARSE_INCLUDE_DIR})
 message("-- G2O_INCLUDE_DIR : " ${G2O_INCLUDE_DIR})
@@ -42,7 +40,7 @@ generate_dynamic_reconfigure_options(
 
 catkin_package(
   LIBRARIES lsdslam
-  DEPENDS Eigen SuiteSparse
+  DEPENDS EIGEN3 CHOLMOD
   CATKIN_DEPENDS libg2o
 )
 
@@ -90,23 +88,37 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
+  ${G2O_INCLUDE_DIR}
+  ${OpenCV_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src/DataStructures
+  ${PROJECT_SOURCE_DIR}/src/DepthEstimation
+  ${PROJECT_SOURCE_DIR}/src/GlobalMapping
+  ${PROJECT_SOURCE_DIR}/src/IOWrapper
+  ${PROJECT_SOURCE_DIR}/src/Tracking
+  ${PROJECT_SOURCE_DIR}/src/util
+  ${PROJECT_SOURCE_DIR}/thirdparty/openFabMap
   ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
+  ${PROJECT_SOURCE_DIR}/thirdparty/Sophus/sophus
   ${CSPARSE_INCLUDE_DIR} #Has been set by SuiteParse
   ${CHOLMOD_INCLUDE_DIR} #Has been set by SuiteParse
 )
 
-
 # build shared library.
 add_library(lsdslam SHARED ${SOURCE_FILES})
-target_link_libraries(lsdslam ${FABMAP_LIB} ${G2O_LIBRARIES} ${catkin_LIBRARIES} csparse cxsparse )
+target_link_libraries(lsdslam
+  ${FABMAP_LIB}
+  ${G2O_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  csparse
+  cxsparse
+)
 #rosbuild_link_boost(lsdslam thread)
-
 
 # build live ros node
 add_executable(live_slam src/main_live_odometry.cpp)
 target_link_libraries(live_slam lsdslam ${catkin_LIBRARIES} ${G2O_LIBRARIES} ${X11_LIBRARIES})
-
 
 # build image node
 add_executable(dataset src/main_on_images.cpp)

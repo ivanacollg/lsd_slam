@@ -64,17 +64,17 @@ IF(UNIX)
     PATHS /usr/local /usr /opt/ros/$ENV{ROS_DISTRO}/lib
     PATH_SUFFIXES lib)
 
-
-  SET(G2O_LIBRARIES ${G2O_CSPARSE_EXTENSION_LIB}
-                    ${G2O_CORE_LIB}           
-                    ${G2O_STUFF_LIB}          
-                    ${G2O_TYPES_SLAM3D_LIB}   
-                    ${G2O_SOLVER_CHOLMOD_LIB} 
-                    ${G2O_SOLVER_PCG_LIB}     
-                    ${G2O_SOLVER_CSPARSE_LIB} 
-                    ${G2O_INCREMENTAL_LIB} 
-		    ${G2O_TYPE_SBA}                       
-                    )
+SET(G2O_LIBRARIES
+  ${G2O_CSPARSE_EXTENSION_LIB}
+  ${G2O_CORE_LIB}
+  ${G2O_STUFF_LIB}
+  ${G2O_TYPES_SLAM3D_LIB}
+  ${G2O_SOLVER_CHOLMOD_LIB}
+  ${G2O_SOLVER_PCG_LIB}
+  ${G2O_SOLVER_CSPARSE_LIB}
+  ${G2O_INCREMENTAL_LIB}
+  ${G2O_TYPE_SBA}
+)
 
 #  IF(G2O_LIBRARIES AND G2O_INCLUDE_DIR)
 #    SET(G2O_FOUND "YES")
