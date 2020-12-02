@@ -1,22 +1,22 @@
 /**
-* This file is part of LSD-SLAM.
-*
-* Copyright 2013 Jakob Engel <engelj at in dot tum dot de> (Technical University of Munich)
-* For more information see <http://vision.in.tum.de/lsdslam>
-*
-* LSD-SLAM is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* LSD-SLAM is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with dvo. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of LSD-SLAM.
+ *
+ * Copyright 2013 Jakob Engel <engelj at in dot tum dot de> (Technical University of Munich)
+ * For more information see <http://vision.in.tum.de/lsdslam>
+ *
+ * LSD-SLAM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * LSD-SLAM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with dvo. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #pragma once
 //#define GL_GLEXT_PROTOTYPES 1
@@ -43,186 +43,166 @@ class KeyFrameDisplay;
 class AnimationObject
 {
 public:
-	double time;
-	double duration;
+  double time;
+  double duration;
 
-	// settings
-	float scaledTH;
-	float absTH;
-	int neighb;
-	int sparsity;
-	bool showLoopClosures;
-	bool showKeyframes;
-	bool showCurrentCam;
+  // settings
+  float scaledTH;
+  float absTH;
+  int neighb;
+  int sparsity;
+  bool showLoopClosures;
+  bool showKeyframes;
+  bool showCurrentCam;
 
-	// frame
-	qglviewer::Frame frame;
+  // frame
+  qglviewer::Frame frame;
 
-	// whether is a KF or only settings change
-	bool isSettings;
+  // whether is a KF or only settings change
+  bool isSettings;
 
-	bool isFix;
+  bool isFix;
 
-	AnimationObject(bool isSettings, double time, double duration, qglviewer::Frame f = qglviewer::Frame())
-	{
-		this->time = time;
-		this->duration = duration;
+  AnimationObject(bool isSettings, double time, double duration, qglviewer::Frame f = qglviewer::Frame())
+  {
+    this->time = time;
+    this->duration = duration;
 
-		scaledTH = scaledDepthVarTH;
-		absTH = absDepthVarTH;
-		neighb = minNearSupport;
-		showKeyframes = showKFCameras;
-		showLoopClosures = showConstraints;
-		showCurrentCam = showCurrentCamera;
-		sparsity = sparsifyFactor;
+    scaledTH = scaledDepthVarTH;
+    absTH = absDepthVarTH;
+    neighb = minNearSupport;
+    showKeyframes = showKFCameras;
+    showLoopClosures = showConstraints;
+    showCurrentCam = showCurrentCamera;
+    sparsity = sparsifyFactor;
 
-		this->isSettings = isSettings;
+    this->isSettings = isSettings;
 
-		frame = f;
+    frame = f;
 
-		isFix = false;
-	}
+    isFix = false;
+  }
 
-	AnimationObject(std::string s)
-	{
-		int isSettings_i;
-		int showLoopClosures_i;
-		int showKeyframes_i;
-		int showCurrentCam_i;
-		int isFix_i;
+  AnimationObject(std::string s)
+  {
+    int isSettings_i;
+    int showLoopClosures_i;
+    int showKeyframes_i;
+    int showCurrentCam_i;
+    int isFix_i;
 
+    qglviewer::Quaternion orient;
 
-		qglviewer::Quaternion orient;
+    float x, y, z;
 
+    if (17 != sscanf(s.c_str(),
+                     "Animation: %d at %lf (dur %lf) S: %f %f %d %d %d %d %d Frame: %lf %lf %lf %lf %f %f %f %d\n",
+                     &isSettings_i, &time, &duration, &scaledTH, &absTH, &showLoopClosures_i, &showKeyframes_i,
+                     &showCurrentCam_i, &sparsity, &neighb, &(orient[0]), &(orient[1]), &(orient[2]), &(orient[3]), &x,
+                     &y, &z, &isFix_i))
+      printf("error parsing: %s\n", s.c_str());
 
-		float x,y,z;
+    isSettings = isSettings_i;
+    showLoopClosures = showLoopClosures_i;
+    showKeyframes = showKeyframes_i;
+    showCurrentCam = showCurrentCam_i;
+    isFix = isFix_i;
 
-		if(17 != sscanf(s.c_str(),"Animation: %d at %lf (dur %lf) S: %f %f %d %d %d %d %d Frame: %lf %lf %lf %lf %f %f %f %d\n",
-				&isSettings_i, &time, &duration,
-				&scaledTH, &absTH, &showLoopClosures_i, &showKeyframes_i, &showCurrentCam_i, &sparsity, &neighb,
-				&(orient[0]),&(orient[1]),&(orient[2]),&(orient[3]),
-				&x, &y, &z, &isFix_i))
-			printf("error parsing: %s\n", s.c_str());
+    frame = qglviewer::Frame(qglviewer::Vec(0, 0, 0), orient);
+    frame.setPosition(x, y, z);
 
-		isSettings = isSettings_i;
-		showLoopClosures = showLoopClosures_i;
-		showKeyframes = showKeyframes_i;
-		showCurrentCam = showCurrentCam_i;
-		isFix = isFix_i;
+    printf("read: %s\n", toString().c_str());
+  }
 
+  bool operator<(const AnimationObject& other) const
+  {
+    return (time < other.time);
+  }
 
-		frame = qglviewer::Frame(qglviewer::Vec(0,0,0),orient);
-		frame.setPosition(x,y,z);
+  std::string toString()
+  {
+    char buf[1000];
 
-		printf("read: %s\n",toString().c_str());
-	}
+    int isSettings_i = isSettings;
+    int showLoopClosures_i = showLoopClosures;
+    int showKeyframes_i = showKeyframes;
+    int showCurrentCam_i = showCurrentCam;
+    int isFix_i = isFix;
 
-    bool operator < (const AnimationObject& other) const
-    {
-        return (time < other.time);
-    }
+    qreal x, y, z;
+    frame.getPosition(x, y, z);
 
-    std::string toString()
-    {
-    	char buf[1000];
+    snprintf(buf, 1000, "Animation: %d at %lf (dur %lf) S: %f %f %d %d %d %d %d Frame: %lf %lf %lf %lf %f %f %f %d",
+             isSettings_i, time, duration, scaledTH, absTH, showLoopClosures_i, showKeyframes_i, showCurrentCam_i,
+             sparsity, neighb, frame.orientation()[0], frame.orientation()[1], frame.orientation()[2],
+             frame.orientation()[3], x, y, z, isFix_i);
 
-		int isSettings_i = isSettings;
-		int showLoopClosures_i = showLoopClosures;
-		int showKeyframes_i = showKeyframes;
-		int showCurrentCam_i = showCurrentCam;
-		int isFix_i = isFix;
-
-		qreal x,y,z;
-		frame.getPosition(x,y,z);
-
-    	snprintf(buf, 1000, "Animation: %d at %lf (dur %lf) S: %f %f %d %d %d %d %d Frame: %lf %lf %lf %lf %f %f %f %d",
-				isSettings_i, time, duration,
-				scaledTH, absTH, showLoopClosures_i, showKeyframes_i, showCurrentCam_i, sparsity, neighb,
-				frame.orientation()[0],frame.orientation()[1],frame.orientation()[2],frame.orientation()[3],
-				x,y,z, isFix_i);
-
-    	return buf;
-    }
+    return buf;
+  }
 };
-
-
-
 
 class PointCloudViewer : public QGLViewer
 {
 public:
-	PointCloudViewer();
-	~PointCloudViewer();
+  PointCloudViewer();
+  ~PointCloudViewer();
 
+  void reset();
 
-	void reset();
+  void addFrameMsg(lsd_slam_viewer::keyframeMsgConstPtr msg);
+  void addGraphMsg(lsd_slam_viewer::keyframeGraphMsgConstPtr msg);
 
-	void addFrameMsg(lsd_slam_viewer::keyframeMsgConstPtr msg);
-	void addGraphMsg(lsd_slam_viewer::keyframeGraphMsgConstPtr msg);
+protected:
+  virtual void draw();
+  virtual void init();
+  virtual void keyPressEvent(QKeyEvent* e);
+  virtual void keyReleaseEvent(QKeyEvent* e);
+  virtual QString helpString() const;
 
-
-protected :
-	virtual void draw();
-	virtual void init();
-	virtual void keyPressEvent(QKeyEvent *e);
-	virtual void keyReleaseEvent(QKeyEvent *e);
-	virtual QString helpString() const;
-
-//	virtual void drawText(int x, int y, const QString & text, const QFont & fnt) {printf(text.toStdString().c_str());};
-
+  //	virtual void drawText(int x, int y, const QString & text, const QFont & fnt)
+  //{printf(text.toStdString().c_str());};
 
 private:
+  // displays kf-graph
+  KeyFrameGraphDisplay* graphDisplay;
 
-	// displays kf-graph
-	KeyFrameGraphDisplay* graphDisplay;
+  // displays only current keyframe (which is not yet in the graph).
+  KeyFrameDisplay* currentCamDisplay;
 
-	// displays only current keyframe (which is not yet in the graph).
-	KeyFrameDisplay* currentCamDisplay;
+  // meddle mutex
+  boost::mutex meddleMutex;
 
+  void setToVideoSize();
+  bool resetRequested;
 
+  // for saving stuff
+  std::string save_folder;
+  double localMsBetweenSaves;
+  double simMsBetweenSaves;
+  double lastSaveTime;
+  double lastCamTime;
+  int lastCamID;
 
-	// meddle mutex
-	boost::mutex meddleMutex;
+  double lastLocalSaveTime;
+  double lastRealSaveTime;
 
+  // for keyframe interpolation
+  int KFLastPCSeq;
+  int KFcurrent;
+  double KFautoPlayIdx[10];
+  bool KFexists[10];
+  double lastAutoplayCheckedSaveTime;
 
-	void setToVideoSize();
-	bool resetRequested;
+  // for display settings autoplay
+  std::vector<AnimationObject> animationList;
+  qglviewer::KeyFrameInterpolator* kfInt;
+  bool customAnimationEnabled;
 
-	// for saving stuff
-	std::string save_folder;
-	double localMsBetweenSaves;
-	double simMsBetweenSaves;
-	double lastSaveTime;
-	double lastCamTime;
-	int lastCamID;
+  bool animationPlaybackEnabled;
+  double animationPlaybackTime;
+  int animationPlaybackID;
 
+  double lastAnimTime;
 
-	double lastLocalSaveTime;
-	double lastRealSaveTime;
-
-
-	// for keyframe interpolation
-	int KFLastPCSeq;
-	int KFcurrent;
-	double KFautoPlayIdx[10];
-	bool KFexists[10];
-	double lastAutoplayCheckedSaveTime;
-
-	// for display settings autoplay
-	std::vector<AnimationObject> animationList;
-	qglviewer::KeyFrameInterpolator* kfInt;
-	bool customAnimationEnabled;
-
-	bool animationPlaybackEnabled;
-	double animationPlaybackTime;
-	int animationPlaybackID;
-
-
-
-	double lastAnimTime;
-
-
-	void remakeAnimation();
+  void remakeAnimation();
 };
-
-
