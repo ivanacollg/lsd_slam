@@ -93,6 +93,8 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR}
   ${G2O_INCLUDE_DIR}
   ${OpenCV_INCLUDE_DIRS}
+  ${CSPARSE_INCLUDE_DIR} #Has been set by SuiteParse
+  ${CHOLMOD_INCLUDE_DIR} #Has been set by SuiteParse
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_SOURCE_DIR}/src/DataStructures
   ${PROJECT_SOURCE_DIR}/src/DepthEstimation
@@ -102,8 +104,6 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/src/util
   ${PROJECT_SOURCE_DIR}/thirdparty/Sophus
   ${PROJECT_SOURCE_DIR}/thirdparty/Sophus/sophus
-  ${CSPARSE_INCLUDE_DIR} #Has been set by SuiteParse
-  ${CHOLMOD_INCLUDE_DIR} #Has been set by SuiteParse
 )
 
 # build shared library.

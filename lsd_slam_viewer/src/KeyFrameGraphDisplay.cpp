@@ -84,7 +84,8 @@ void KeyFrameGraphDisplay::draw()
     f2.close();
     f3.close();
 
-    (void)system(("rm " + ros::package::getPath("lsd_slam_viewer") + "/pc_tmp.ply").c_str());
+    int rmRslt = system(("rm " + ros::package::getPath("lsd_slam_viewer") + "/pc_tmp.ply").c_str());
+    printf("rm of pc_tmp.ply returned %i\n", rmRslt);
     flushPointcloud = false;
     printf("Done Flushing Pointcloud with %d points!\n", numpts);
   }
