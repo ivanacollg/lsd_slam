@@ -2,8 +2,9 @@
 
 ## This is an updated version to work on Ubuntu 20.04 + ROS Noetic
 
-The original repository can be found at [https://github.com/tum-vision/lsd_slam](https://github.com/tum-vision/lsd_slam)
-Some changes for Ubuntu 16.04 were already made at [https://github.com/tyunist/LSD-SLAM](https://github.com/tyunist/LSD-SLAM)
+The original repository can be found at [https://github.com/tum-vision/lsd_slam](https://github.com/tum-vision/lsd_slam).
+
+Some changes for Ubuntu 16.04 were already made at [https://github.com/tyunist/LSD-SLAM](https://github.com/tyunist/LSD-SLAM).
 
 Changes are mostly:
 * Use Qt5 instead of 4
@@ -61,7 +62,7 @@ This version can be compiled with ROS Noetic on Ubuntu 20.04. Other systems have
 
 2. Clone the repository
 
-    git clone https://github.com/mstampa/LSD-SLAM
+    git clone https://github.com/mstampa/lsd_slam
 
 3. Compile
 
