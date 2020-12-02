@@ -17,14 +17,14 @@ IF(UNIX)
     SET(G2O_FIND_QUIETLY TRUE)
   ENDIF(G2O_INCLUDE_DIR AND G2O_LIBRARIES)
 
-  MESSAGE(STATUS "Searching for g2o ...")
+  MESSAGE(STATUS "Looking for g2o")
   FIND_PATH(G2O_INCLUDE_DIR
     NAMES core math_groups types
     PATHS /usr/local /usr /opt/ros/$ENV{ROS_DISTRO}/
     PATH_SUFFIXES include/g2o include)
 
   IF (G2O_INCLUDE_DIR)
-    MESSAGE(STATUS "Found g2o headers in: ${G2O_INCLUDE_DIR}")
+    MESSAGE(STATUS "Looking for g2o - found")
   ENDIF (G2O_INCLUDE_DIR)
 
   FIND_LIBRARY(G2O_CORE_LIB             

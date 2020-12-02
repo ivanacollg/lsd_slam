@@ -18,25 +18,23 @@
  * along with LSD-SLAM. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "LiveSLAMWrapper.h"
-
-#include <boost/thread.hpp>
-#include "util/settings.h"
-#include "util/globalFuncs.h"
-#include "SlamSystem.h"
-
 #include <sstream>
 #include <fstream>
 #include <dirent.h>
 #include <algorithm>
+#include <boost/thread.hpp>
 
-#include "IOWrapper/ROS/ROSOutput3DWrapper.h"
-#include "IOWrapper/ROS/rosReconfigure.h"
-
-#include "util/Undistorter.h"
 #include <ros/package.h>
 
 #include "opencv2/opencv.hpp"
+
+#include "LiveSLAMWrapper.h"
+#include "SlamSystem.h"
+#include "IOWrapper/ROS/ROSOutput3DWrapper.h"
+#include "IOWrapper/ROS/rosReconfigure.h"
+#include "util/settings.h"
+#include "util/globalFuncs.h"
+#include "util/Undistorter.h"
 
 std::string& ltrim(std::string& s)
 {
@@ -212,7 +210,7 @@ int main(int argc, char** argv)
 
   for (unsigned int i = 0; i < files.size(); i++)
   {
-    cv::Mat imageDist = cv::imread(files[i], CV_LOAD_IMAGE_GRAYSCALE);
+    cv::Mat imageDist = cv::imread(files[i], cv::IMREAD_GRAYSCALE);
 
     if (imageDist.rows != h_inp || imageDist.cols != w_inp)
     {

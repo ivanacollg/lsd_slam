@@ -16,15 +16,15 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Eigen3 REQUIRED)
-find_package(OpenCV 4.1.2 REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(X11 REQUIRED)
 include(cmake/FindG2O.cmake)
 include(cmake/FindSuiteParse.cmake)
 
-message("-- OpenCV_INCLUDE_DIRS : " ${OpenCV_INCLUDE_DIRS})
-message("-- CHOLMOD_INCLUDE_DIR : " ${CHOLMOD_INCLUDE_DIR})
-message("-- CSPARSE_INCLUDE_DIR : " ${CSPARSE_INCLUDE_DIR})
-message("-- G2O_INCLUDE_DIR : " ${G2O_INCLUDE_DIR})
+message(STATUS "G2O_INCLUDE_DIR : " ${G2O_INCLUDE_DIR})
+message(STATUS "OpenCV_INCLUDE_DIRS : " ${OpenCV_INCLUDE_DIRS})
+message(STATUS "CHOLMOD_INCLUDE_DIR : " ${CHOLMOD_INCLUDE_DIR})
+message(STATUS "CSPARSE_INCLUDE_DIR : " ${CSPARSE_INCLUDE_DIR})
 
 # Sophus
 add_subdirectory(${PROJECT_SOURCE_DIR}/thirdparty/Sophus)
@@ -113,10 +113,9 @@ target_link_libraries(lsdslam
   ${G2O_LIBRARIES}
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
-  csparse
-  cxsparse
+  ${CHOLMOD_LIBRARY}
+  ${CSPARSE_LIBRARY}
 )
-#rosbuild_link_boost(lsdslam thread)
 
 # build live ros node
 add_executable(live_slam src/main_live_odometry.cpp)
