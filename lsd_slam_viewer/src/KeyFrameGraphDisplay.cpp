@@ -84,7 +84,7 @@ void KeyFrameGraphDisplay::draw()
     f2.close();
     f3.close();
 
-    system(("rm " + ros::package::getPath("lsd_slam_viewer") + "/pc_tmp.ply").c_str());
+    (void)system(("rm " + ros::package::getPath("lsd_slam_viewer") + "/pc_tmp.ply").c_str());
     flushPointcloud = false;
     printf("Done Flushing Pointcloud with %d points!\n", numpts);
   }
@@ -184,7 +184,7 @@ void KeyFrameGraphDisplay::addGraphMsg(lsd_slam_viewer::keyframeGraphMsgConstPtr
     if (keyframesByID.count(graphPoses[i].id) == 0)
     {
       //	printf("ERROR: graph update contains pose for frame %d, but I dont have a frame %d!\n", graphPoses[i].id,
-      //graphPoses[i].id);
+      // graphPoses[i].id);
     }
     else
       memcpy(keyframesByID[graphPoses[i].id]->camToWorld.data(), graphPoses[i].camToWorld, 7 * sizeof(float));
