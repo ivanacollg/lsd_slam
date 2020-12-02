@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(lsd_slam_core)
 
-#add_compile_options(-std=c++17)
-add_compile_options(-std=gnu++17) # fixes some errors about allocator types appearing in newer g++ versions
 set(CMAKE_BUILD_TYPE Release)
+add_compile_options(-std=gnu++17) # fixes some errors about allocator types appearing in newer g++ versions
+add_compile_options(-march=native)
 
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
@@ -51,11 +51,6 @@ catkin_package(
 # SSE flags
 add_definitions("-DUSE_ROS")
 add_definitions("-DENABLE_SSE")
-
-# Also add some useful compiler flag
-#set(CMAKE_CXX_FLAGS
-#   "${CMAKE_CXX_FLAGS} -march=native -Wall -std=c++0x"
-#)
 
 # Set source files
 set(lsd_SOURCE_FILES
@@ -124,7 +119,5 @@ target_link_libraries(live_slam lsdslam ${catkin_LIBRARIES} ${G2O_LIBRARIES} ${X
 # build image node
 add_executable(dataset src/main_on_images.cpp)
 target_link_libraries(dataset lsdslam ${catkin_LIBRARIES} ${G2O_LIBRARIES})
-
-# TODO add INSTALL
 
 
