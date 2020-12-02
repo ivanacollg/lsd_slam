@@ -20,10 +20,11 @@
 
 #include "KeyFrameGraph.h"
 #include "DataStructures/Frame.h"
+#include "GlobalMapping/g2oTypeSim3Sophus.h"
+#include "IOWrapper/ImageDisplay.h"
+#include "util/globalFuncs.h"
 
 #include <g2o/core/sparse_optimizer.h>
-#include <g2o/solvers/pcg/linear_solver_pcg.h>
-#include <g2o/solvers/csparse/linear_solver_csparse.h>
 #include <g2o/core/block_solver.h>
 #include <g2o/core/solver.h>
 #include <g2o/core/optimization_algorithm_dogleg.h>
@@ -31,13 +32,11 @@
 #include <g2o/core/robust_kernel_impl.h>
 #include <g2o/core/estimate_propagator.h>
 #include <g2o/core/sparse_optimizer_terminate_action.h>
+#include <g2o/types/sim3/sim3.h>
+#include <g2o/solvers/pcg/linear_solver_pcg.h>
+#include <g2o/solvers/csparse/linear_solver_csparse.h>
 
 #include "opencv2/opencv.hpp"
-
-#include <g2o/types/sim3/sim3.h>
-#include "GlobalMapping/g2oTypeSim3Sophus.h"
-
-#include "IOWrapper/ImageDisplay.h"
 
 // for mkdir
 #include <sys/types.h>
@@ -46,10 +45,9 @@
 #include <dirent.h>
 #include <queue>
 
+#include <memory>
 #include <iostream>
 #include <fstream>
-
-#include "util/globalFuncs.h"
 
 namespace lsd_slam
 {
@@ -63,10 +61,13 @@ KeyFrameGraph::KeyFrameGraph() : nextEdgeId(0)
 {
   typedef g2o::BlockSolver_7_3 BlockSolver;
   typedef g2o::LinearSolverCSparse<BlockSolver::PoseMatrixType> LinearSolver;
-  // typedef g2o::LinearSolverPCG<BlockSolver::PoseMatrixType> LinearSolver;
-  LinearSolver* solver = new LinearSolver();
-  BlockSolver* blockSolver = new BlockSolver(solver);
-  g2o::OptimizationAlgorithmLevenberg* algorithm = new g2o::OptimizationAlgorithmLevenberg(blockSolver);
+
+  // create the linear solver
+  auto solver = g2o::make_unique<LinearSolver>();
+  // create the block solver on top of the linear solver
+  auto blockSolver = g2o::make_unique<BlockSolver>(std::move(solver));
+  // create the algorithm to carry out the optimization
+  auto algorithm = new g2o::OptimizationAlgorithmLevenberg(std::move(blockSolver));
   graph.setAlgorithm(algorithm);
 
   graph.setVerbose(false);  // printOptimizationInfo
