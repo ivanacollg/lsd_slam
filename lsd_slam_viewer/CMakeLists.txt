@@ -43,7 +43,7 @@ include_directories(
 
 # SSE flags
 set(CMAKE_CXX_FLAGS
-   "${CMAKE_CXX_FLAGS} -march=native -Wall -std=c++0x"
+   "${CMAKE_CXX_FLAGS} -Wall"
 )
 
 add_message_files(

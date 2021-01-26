@@ -70,10 +70,13 @@ KeyFrameGraph::KeyFrameGraph() : nextEdgeId(0)
   auto algorithm = new g2o::OptimizationAlgorithmLevenberg(std::move(blockSolver));
   graph.setAlgorithm(algorithm);
 
-  graph.setVerbose(false);  // printOptimizationInfo
-  solver->setWriteDebug(true);
-  blockSolver->setWriteDebug(true);
-  algorithm->setWriteDebug(true);
+  // printOptimizationInfo
+  graph.setVerbose(false);
+
+  // the following lines cause segfaults
+  //  solver->setWriteDebug(true);
+  //  blockSolver->setWriteDebug(true);
+  //  algorithm->setWriteDebug(true);
 
   totalPoints = 0;
   totalEdges = 0;
