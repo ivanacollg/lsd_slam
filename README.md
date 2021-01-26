@@ -9,6 +9,7 @@ Some changes for Ubuntu 16.04 were already made at [https://github.com/tyunist/L
 Changes are mostly:
 * Use Qt5 instead of 4
 * Fixed compiler errors and warnings
+* Fixed segmentation faults caused by changes that were introdued in the g2o library
 * Improved CMakeLists.txt
 * Formatted according to ROS coding style
 * Updated this README
