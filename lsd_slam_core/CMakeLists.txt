@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(lsd_slam_core)
 
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 add_compile_options(-std=gnu++17) # fixes some errors about allocator types appearing in newer g++ versions
 #add_compile_options(-march=native)
 

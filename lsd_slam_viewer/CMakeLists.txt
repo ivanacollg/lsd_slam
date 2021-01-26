@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(lsd_slam_viewer)
 
 add_compile_options(-std=c++17)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 ADD_SUBDIRECTORY(${PROJECT_SOURCE_DIR}/thirdparty/Sophus)
 
@@ -43,7 +43,7 @@ include_directories(
 
 # SSE flags
 set(CMAKE_CXX_FLAGS
-   "${CMAKE_CXX_FLAGS} -march=native -Wall -std=c++0x"
+   "${CMAKE_CXX_FLAGS} -Wall"
 )
 
 add_message_files(
