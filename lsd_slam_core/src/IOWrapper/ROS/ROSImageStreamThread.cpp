@@ -105,7 +105,7 @@ void ROSImageStreamThread::operator()()
   exit(0);
 }
 
-void ROSImageStreamThread::vidCb(const sensor_msgs::ImageConstPtr img)
+/*void ROSImageStreamThread::vidCb(const sensor_msgs::ImageConstPtr img)
 {
   if (!haveCalib)
     return;
@@ -134,6 +134,41 @@ void ROSImageStreamThread::vidCb(const sensor_msgs::ImageConstPtr img)
   else
   {
     bufferItem.data = cv_ptr->image;
+  }
+
+  imageBuffer->pushBack(bufferItem);
+}*/
+
+void ROSImageStreamThread::vidCb(const sensor_msgs::CompressedImageConstPtr img)
+{
+  if (!haveCalib)
+    return;
+
+  cv::Mat image = cv::imdecode(cv::Mat(img->data), cv::IMREAD_GRAYSCALE);
+  //cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(img, sensor_msgs::image_encodings::MONO8);
+
+  if (img->header.seq < (unsigned int)lastSEQ)
+  {
+    printf("Backward-Jump in SEQ detected, but ignoring for now.\n");
+    lastSEQ = 0;
+    return;
+  }
+  lastSEQ = img->header.seq;
+
+  TimestampedMat bufferItem;
+  if (img->header.stamp.toSec() != 0)
+    bufferItem.timestamp = Timestamp(img->header.stamp.toSec());
+  else
+    bufferItem.timestamp = Timestamp(ros::Time::now().toSec());
+
+  if (undistorter != 0)
+  {
+    assert(undistorter->isValid());
+    undistorter->undistort(image, bufferItem.data);
+  }
+  else
+  {
+    bufferItem.data = image;
   }
 
   imageBuffer->pushBack(bufferItem);
