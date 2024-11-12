@@ -24,6 +24,7 @@
 #include "KeyFrameDisplay.h"
 #include <stdio.h>
 #include "settings.h"
+#include <vector>
 
 #include <GL/glx.h>
 #include <GL/gl.h>
@@ -99,6 +100,37 @@ void KeyFrameDisplay::setFrom(lsd_slam_viewer::keyframeMsgConstPtr msg)
   glBuffersValid = false;
 }
 
+// Function to save the point cloud to a PLY file
+void KeyFrameDisplay::savePointCloudToPLY(const std::vector<Sophus::Vector3f>& cloud_array, const std::string& filename) 
+{
+    std::ofstream outFile(filename);
+
+    if (!outFile.is_open()) {
+        std::cerr << "Failed to open the file for writing!" << std::endl;
+        return;
+    }
+
+    // Write the PLY header
+    outFile << "ply\n";
+    outFile << "format ascii 1.0\n";
+    outFile << "element vertex " << cloud_array.size() << "\n";
+    outFile << "property float x\n";
+    outFile << "property float y\n";
+    outFile << "property float z\n";
+    outFile << "end_header\n";
+
+    // Write the point data (x, y, z)
+    for (const auto& pt : cloud_array) {
+        outFile << pt[0] << " " << pt[1] << " " << pt[2] << "\n";
+    }
+
+    // Close the file
+    outFile.close();
+
+    std::cout << "Point cloud saved to " << filename << std::endl;
+}
+
+
 void KeyFrameDisplay::refreshPC()
 {
   //	minNearSupport = 9;
@@ -133,6 +165,9 @@ void KeyFrameDisplay::refreshPC()
   my_sparsifyFactor = sparsifyFactor;
   // data is directly in ros message, in correct format.
   vertexBufferNumPoints = 0;
+
+  // Create a vector to hold the cloud of points (total points, each with 3 floats)
+  std::vector<Sophus::Vector3f> cloud_array(width * height);
 
   int total = 0, displayed = 0;
   for (int y = 1; y < height - 1; y++)
@@ -178,6 +213,11 @@ void KeyFrameDisplay::refreshPC()
       tmpBuffer[vertexBufferNumPoints].point[1] = (y * fyi + cyi) * depth;
       tmpBuffer[vertexBufferNumPoints].point[2] = depth;
 
+      Sophus::Vector3f pt = camToWorld * (Sophus::Vector3f((x * fxi + cxi), (y * fyi + cyi), 1) * depth);
+      cloud_array[total-1][0] = pt[0];
+			cloud_array[total-1][1] = pt[1];
+			cloud_array[total-1][2] = pt[2];
+
       tmpBuffer[vertexBufferNumPoints].color[3] = 100;
       tmpBuffer[vertexBufferNumPoints].color[2] = originalInput[x + y * width].color[0];
       tmpBuffer[vertexBufferNumPoints].color[1] = originalInput[x + y * width].color[1];
@@ -188,6 +228,8 @@ void KeyFrameDisplay::refreshPC()
     }
   totalPoints = total;
   displayedPoints = displayed;
+
+  savePointCloudToPLY(cloud_array, "lsd_pc.ply");
 
   // create new ones, static
   vertexBufferId = 0;
@@ -204,6 +246,7 @@ void KeyFrameDisplay::refreshPC()
 
   delete[] tmpBuffer;
 }
+
 
 void KeyFrameDisplay::drawCam(float lineWidth, float* color)
 {

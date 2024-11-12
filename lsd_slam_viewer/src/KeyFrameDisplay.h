@@ -56,6 +56,7 @@ public:
   void drawCam(float lineWidth = 1, float* color = 0);
   void drawPC(float pointSize = 1, float alpha = 1);
   void refreshPC();
+  void savePointCloudToPLY(const std::vector<Sophus::Vector3f>& cloud_array, const std::string& filename);
 
   int flushPC(std::ofstream* f);
 
